@@ -6,15 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://www.newrtc.com">
-  <title>Archives: 2018 | Hexo</title>
+  <title>webrtc 视频编码之 h264 自动调节分辨率 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://www.newrtc.com/archives/2018/index.html">
+  <meta name="description" content="webrtc 视频编码">
+<meta name="keywords" content="newrtc, webrtc, h264">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webrtc 视频编码之 h264 自动调节分辨率">
+<meta property="og:url" content="http://www.newrtc.com/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="webrtc 视频编码">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.newrtc.com/images/webrtc/webrtc_openh264_1.png">
+<meta property="og:image" content="http://www.newrtc.com/images/user/Eric.jpg">
+<meta property="og:updated_time" content="2017-10-19T07:08:21.460Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="webrtc 视频编码之 h264 自动调节分辨率">
+<meta name="twitter:description" content="webrtc 视频编码">
+<meta name="twitter:image" content="http://www.newrtc.com/images/webrtc/webrtc_openh264_1.png">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -150,75 +158,73 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-webrtc/2017-10-19-webrtc openh264-2" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/26/webrtc/2017-10-25-android system echo/" class="archive-article-date">
-  	<time datetime="2018-07-26T11:25:14.071Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/26/webrtc/2017-10-25-android system echo/">android 系统自带回声消除</a>
+    <h1 class="article-title" itemprop="name">
+      webrtc 视频编码之 h264 自动调节分辨率
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/webrtc//" class="article-tag-list-link color2">webrtc</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/" class="archive-article-date">
+        
+        <a href="/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/" class="archive-article-date">
   	<time datetime="2018-07-26T11:25:14.059Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/">webrtc 视频编码之 h264 自动调节分辨率</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="webrtc-视频编码之-h264-自动调节分辨率"><a href="#webrtc-视频编码之-h264-自动调节分辨率" class="headerlink" title="webrtc 视频编码之 h264 自动调节分辨率"></a>webrtc 视频编码之 h264 自动调节分辨率</h2><p>上次说到 openh264 的编码分辨率是通过 QualityScaler 计算得来的，继续看</p>
+<p><img src="/images/webrtc/webrtc_openh264_1.png" alt=""></p>
+<p>看代码实现</p>
+<p>初始化接口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">void QualityScaler::Init(int low_qp_threshold,</span><br><span class="line">                         int high_qp_threshold,</span><br><span class="line">                         int initial_bitrate_kbps,</span><br><span class="line">                         int width,</span><br><span class="line">                         int height,</span><br><span class="line">                         int fps) &#123;</span><br><span class="line">  ClearSamples();</span><br><span class="line">  low_qp_threshold_ = low_qp_threshold;</span><br><span class="line">  high_qp_threshold_ = high_qp_threshold;</span><br><span class="line">  downscale_shift_ = 0;</span><br><span class="line">  fast_rampup_ = true;</span><br><span class="line"></span><br><span class="line">  const int init_width = width;</span><br><span class="line">  const int init_height = height;</span><br><span class="line">  if (initial_bitrate_kbps &gt; 0) &#123;</span><br><span class="line">    int init_num_pixels = width * height;</span><br><span class="line">    if (initial_bitrate_kbps &lt; kVgaBitrateThresholdKbps)</span><br><span class="line">      init_num_pixels = kVgaNumPixels;</span><br><span class="line">    if (initial_bitrate_kbps &lt; kQvgaBitrateThresholdKbps)</span><br><span class="line">      init_num_pixels = kQvgaNumPixels;</span><br><span class="line">    while (width * height &gt; init_num_pixels) &#123;</span><br><span class="line">      ++downscale_shift_;</span><br><span class="line">      width /= 2;</span><br><span class="line">      height /= 2;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  UpdateTargetResolution(init_width, init_height);</span><br><span class="line">  ReportFramerate(fps);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编码器对不同的编码分辨率预设了码率范围，当码率超出对应的范围时，会去调整分辨率</p>
+<p>对应范围在<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">static const int kVgaBitrateThresholdKbps = 500;</span><br><span class="line">static const int kVgaNumPixels = 700 * 500;  // 640x480</span><br><span class="line">static const int kQvgaBitrateThresholdKbps = 250;</span><br><span class="line">static const int kQvgaNumPixels = 400 * 300;  // 320x240</span><br></pre></td></tr></table></figure></p>
+<p>视频清晰度上报<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">void QualityScaler::ReportQP(int qp) &#123;</span><br><span class="line">  framedrop_percent_.AddSample(0);</span><br><span class="line">  average_qp_.AddSample(qp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>qp 表明了当前帧的清晰度，越大视频越模糊，越小越清晰（0-51），当编码器编完时，会计算当前帧的qp，并上报</p>
+<p>编码器丢帧上报<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void QualityScaler::ReportDroppedFrame() &#123;</span><br><span class="line">  framedrop_percent_.AddSample(100);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当码率太小或者画面剧烈运动时，编码需要的码率增大，但是设置的目标码率太小，导致编码失败，此时上报丢帧</p>
+<p>编码器编码前对原始图像拉伸计算<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">void QualityScaler::OnEncodeFrame(int width, int height) &#123;</span><br><span class="line">  // Should be set through InitEncode -&gt; Should be set by now.</span><br><span class="line">  RTC_DCHECK_GE(low_qp_threshold_, 0);</span><br><span class="line">  if (target_res_.width != width || target_res_.height != height) &#123;</span><br><span class="line">    UpdateTargetResolution(width, height);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Check if we should scale down due to high frame drop.</span><br><span class="line">  const auto drop_rate = framedrop_percent_.GetAverage(num_samples_downscale_);</span><br><span class="line">  if (drop_rate &amp;&amp; *drop_rate &gt;= kFramedropPercentThreshold) &#123;</span><br><span class="line">    ScaleDown();</span><br><span class="line">    return;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Check if we should scale up or down based on QP.</span><br><span class="line">  const auto avg_qp_down = average_qp_.GetAverage(num_samples_downscale_);</span><br><span class="line">  if (avg_qp_down &amp;&amp; *avg_qp_down &gt; high_qp_threshold_) &#123;</span><br><span class="line">    ScaleDown();</span><br><span class="line">    return;</span><br><span class="line">  &#125;</span><br><span class="line">  const auto avg_qp_up = average_qp_.GetAverage(num_samples_upscale_);</span><br><span class="line">  if (avg_qp_up &amp;&amp; *avg_qp_up &lt;= low_qp_threshold_) &#123;</span><br><span class="line">    // QP has been low. We want to try a higher resolution.</span><br><span class="line">    ScaleUp();</span><br><span class="line">    return;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先是按照码率计算的来一下调整<br>再根据丢帧率百分比计算</p>
+<p>yuv 图像拉伸<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rtc::scoped_refptr&lt;VideoFrameBuffer&gt; QualityScaler::GetScaledBuffer(</span><br><span class="line">    const rtc::scoped_refptr&lt;VideoFrameBuffer&gt;&amp; frame)</span><br></pre></td></tr></table></figure></p>
+<p>参数设定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">static const int kMeasureSecondsUpscale = 5; //调整时间间隔 避免频繁调整 导致画面一直变化</span><br><span class="line">static const int kMeasureSecondsDownscale = 5;</span><br><span class="line">static const int kFramedropPercentThreshold = 60; //编码器丢帧率</span><br><span class="line">// Min width/height to downscale to, set to not go below QVGA, but with some</span><br><span class="line">// margin to permit &quot;almost-QVGA&quot; resolutions, such as QCIF.</span><br><span class="line">static const int kMinDownscaleDimension = 140;  //最小分辨率</span><br><span class="line"></span><br><span class="line">static const int kLowH264QpThreshold = 24; //最小qp 小于此值 会提高分辨率</span><br><span class="line">static const int kHighH264QpThreshold = 37; //最大qp 大于此值 会降低分辨率</span><br></pre></td></tr></table></figure>
+<p>ok，我们可以修改这些参数 设置最小的分辨率，调整时间等的</p>
+<p><img src="/images/user/Eric.jpg" alt=""></p>
 
-        <div class="article-info info-on-right">
-          
-          
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -231,131 +237,113 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://www.newrtc.com/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/26/webrtc/2017-10-15-webrtc openh264-1/" class="archive-article-date">
-  	<time datetime="2018-07-26T11:25:14.041Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2018/07/26/webrtc/2017-10-25-android system echo/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          android 系统自带回声消除
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/07/26/webrtc/2017-10-15-webrtc openh264-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">webrtc 视频编码之 h264 自动调节分辨率</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/26/webrtc/2017-10-15-webrtc openh264-1/">webrtc 视频编码之 h264 自动调节分辨率</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/webrtc//" class="article-tag-list-link color2">webrtc</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/26/system/2017-10-24-linux coredump/" class="archive-article-date">
-  	<time datetime="2018-07-26T11:25:14.030Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/26/system/2017-10-24-linux coredump/">linux coredump 设置</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/system//" class="article-tag-list-link color2">system</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/26/system/2017-10-12-linux timer tsc/" class="archive-article-date">
-  	<time datetime="2018-07-26T11:25:14.012Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/26/system/2017-10-12-linux timer tsc/">linux 时钟源 tsc</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/system//" class="article-tag-list-link color2">system</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
 
 
           </div>
@@ -378,8 +366,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

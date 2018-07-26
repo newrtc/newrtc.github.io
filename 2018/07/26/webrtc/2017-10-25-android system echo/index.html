@@ -6,15 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://www.newrtc.com">
-  <title>Archives: 2018 | Hexo</title>
+  <title>android 系统自带回声消除 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://www.newrtc.com/archives/2018/index.html">
+  <meta name="description" content="android echo">
+<meta name="keywords" content="android, webrtc, echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android 系统自带回声消除">
+<meta property="og:url" content="http://www.newrtc.com/2018/07/26/webrtc/2017-10-25-android system echo/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="android echo">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.newrtc.com/images/user/Eric.jpg">
+<meta property="og:updated_time" content="2017-10-25T09:15:38.411Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="android 系统自带回声消除">
+<meta name="twitter:description" content="android echo">
+<meta name="twitter:image" content="http://www.newrtc.com/images/user/Eric.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -150,37 +157,81 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-webrtc/2017-10-25-android system echo" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      android 系统自带回声消除
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/26/webrtc/2017-10-25-android system echo/" class="archive-article-date">
+
+        
+        <a href="/2018/07/26/webrtc/2017-10-25-android system echo/" class="archive-article-date">
   	<time datetime="2018-07-26T11:25:14.071Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/26/webrtc/2017-10-25-android system echo/">android 系统自带回声消除</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="使用-android-自带回声消除"><a href="#使用-android-自带回声消除" class="headerlink" title="使用 android 自带回声消除"></a>使用 android 自带回声消除</h2><p>Android 在4.1 API leve 16 添加了回声消除处理 <strong>AcousticEchoCanceler</strong></p>
+<p>不过由于手机厂商太多，碎片化严重，实现效果也不一样，这里只做测试性使用</p>
+<p>记录一下步骤：</p>
+<p><strong>检测系统是否支持回声消除</strong></p>
+<p><strong>创建录制，并拿到sessionid</strong></p>
+<p><strong>创建回声消除 关联录制的sessionid</strong></p>
+<p><strong>创建播放，关联录制的sessionid</strong></p>
+<p>这三者由录制的sessionid 关联起来了，就能够实处理掉mic采集到的由喇叭播放出的声音了。</p>
+<p>看代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   public static boolean chkNewDev()</span><br><span class="line">   &#123;</span><br><span class="line">         return android.os.Build.VERSION.SDK_INT &gt;= 16;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">public static boolean isDeviceSupport()</span><br><span class="line">&#123;</span><br><span class="line">       return AcousticEchoCanceler.isAvailable();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>检测是否支持，居然存在不准确的情况？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">int InitAudioRecord()</span><br><span class="line">		&#123;</span><br><span class="line">			m_bufferSizeInBytes = AudioRecord.getMinBufferSize(m_sampleRateInHz,  m_channelConfig, m_audioFormat);  	</span><br><span class="line">			if (chkNewDev())</span><br><span class="line">			&#123;</span><br><span class="line">				m_audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION, m_sampleRateInHz, m_channelConfig, m_audioFormat, m_bufferSizeInBytes);</span><br><span class="line">			&#125;</span><br><span class="line">			else</span><br><span class="line">			&#123;</span><br><span class="line">				m_audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, m_sampleRateInHz, m_channelConfig, m_audioFormat, m_bufferSizeInBytes);</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			int packSize = Math.min(960, m_bufferSizeInBytes*2);</span><br><span class="line">			audioData = new short[packSize];</span><br><span class="line">			return 0;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果系统支持回声消除，则用<strong>MediaRecorder.AudioSource.VOICE_COMMUNICATION</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public int GetSessionId()</span><br><span class="line">		&#123;</span><br><span class="line">			return m_audioRecord.getAudioSessionId();</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>获取mic的sessionid，给回声消除和播放关联用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public boolean initAEC(int audioSession)</span><br><span class="line">	&#123;</span><br><span class="line">		if (m_canceler != null)</span><br><span class="line">		&#123;</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line">		m_canceler = AcousticEchoCanceler.create(audioSession);</span><br><span class="line">		m_canceler.setEnabled(true);</span><br><span class="line">		return m_canceler.getEnabled();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>创建回声消除 并使能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int InitAudioTrack()</span><br><span class="line">&#123;</span><br><span class="line">	int m_sampleRateInHz = 48000;  </span><br><span class="line">	int m_channelConfig  =  AudioFormat.CHANNEL_IN_STEREO;   </span><br><span class="line">	int m_audioFormat    = AudioFormat.ENCODING_PCM_16BIT; </span><br><span class="line">	int m_bufferSizeInBytes = 1024*4;</span><br><span class="line">	</span><br><span class="line">	if (chkNewDev() &amp;&amp; m_recorder != null)</span><br><span class="line">	&#123;</span><br><span class="line">		m_audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, m_sampleRateInHz, m_channelConfig, m_audioFormat, m_bufferSizeInBytes, AudioTrack.MODE_STREAM, m_recorder.GetSessionId());</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		m_audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, m_sampleRateInHz, m_channelConfig, m_audioFormat, m_bufferSizeInBytes, AudioTrack.MODE_STREAM);</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果系统支持回声处理 则创建关联mic 的sessionid</p>
+<p>ok，走通了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);</span><br><span class="line">AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);</span><br><span class="line">audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);</span><br><span class="line">audioManager.setSpeakerphoneOn(true);</span><br></pre></td></tr></table></figure>
+<p>忘了说，在程序启动的时候需要设置一下 <strong>AudioManager.MODE_IN_COMMUNICATION</strong> 和 外放来验证回声处理效果</p>
+<p>代码在github  <a href="https://github.com/newrtc/AndroidEchoDemo/" target="_blank" rel="noopener">AndroidEchoDemo</a></p>
+<blockquote>
+<p>talk is cheap, show me the code</p>
+</blockquote>
+<blockquote>
+<p>感兴趣或有问题在这里找我</p>
+</blockquote>
+<p><img src="/images/user/Eric.jpg" alt=""></p>
 
-        <div class="article-info info-on-right">
-          
-          
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -193,169 +244,104 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://www.newrtc.com/2018/07/26/webrtc/2017-10-25-android system echo/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/" class="archive-article-date">
-  	<time datetime="2018-07-26T11:25:14.059Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">webrtc 视频编码之 h264 自动调节分辨率</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/">webrtc 视频编码之 h264 自动调节分辨率</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/webrtc//" class="article-tag-list-link color2">webrtc</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/26/webrtc/2017-10-15-webrtc openh264-1/" class="archive-article-date">
-  	<time datetime="2018-07-26T11:25:14.041Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/26/webrtc/2017-10-15-webrtc openh264-1/">webrtc 视频编码之 h264 自动调节分辨率</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/webrtc//" class="article-tag-list-link color2">webrtc</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/26/system/2017-10-24-linux coredump/" class="archive-article-date">
-  	<time datetime="2018-07-26T11:25:14.030Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/26/system/2017-10-24-linux coredump/">linux coredump 设置</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/system//" class="article-tag-list-link color2">system</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/07/26/system/2017-10-12-linux timer tsc/" class="archive-article-date">
-  	<time datetime="2018-07-26T11:25:14.012Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/26/system/2017-10-12-linux timer tsc/">linux 时钟源 tsc</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/system//" class="article-tag-list-link color2">system</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -378,8 +364,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

@@ -152,35 +152,51 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-webrtc/2017-10-25-android system echo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/26/hello-world/">Hello World</a>
+      <a class="article-title" href="/2018/07/26/webrtc/2017-10-25-android system echo/">android 系统自带回声消除</a>
     </h1>
   
 
         
-        <a href="/2018/07/26/hello-world/" class="archive-article-date">
-  	<time datetime="2018-07-26T09:28:19.335Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
+        <a href="/2018/07/26/webrtc/2017-10-25-android system echo/" class="archive-article-date">
+  	<time datetime="2018-07-26T11:25:14.071Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <h2 id="使用-android-自带回声消除"><a href="#使用-android-自带回声消除" class="headerlink" title="使用 android 自带回声消除"></a>使用 android 自带回声消除</h2><p>Android 在4.1 API leve 16 添加了回声消除处理 <strong>AcousticEchoCanceler</strong></p>
+<p>不过由于手机厂商太多，碎片化严重，实现效果也不一样，这里只做测试性使用</p>
+<p>记录一下步骤：</p>
+<p><strong>检测系统是否支持回声消除</strong></p>
+<p><strong>创建录制，并拿到sessionid</strong></p>
+<p><strong>创建回声消除 关联录制的sessionid</strong></p>
+<p><strong>创建播放，关联录制的sessionid</strong></p>
+<p>这三者由录制的sessionid 关联起来了，就能够实处理掉mic采集到的由喇叭播放出的声音了。</p>
+<p>看代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   public static boolean chkNewDev()</span><br><span class="line">   &#123;</span><br><span class="line">         return android.os.Build.VERSION.SDK_INT &gt;= 16;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">public static boolean isDeviceSupport()</span><br><span class="line">&#123;</span><br><span class="line">       return AcousticEchoCanceler.isAvailable();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>检测是否支持，居然存在不准确的情况？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">int InitAudioRecord()</span><br><span class="line">		&#123;</span><br><span class="line">			m_bufferSizeInBytes = AudioRecord.getMinBufferSize(m_sampleRateInHz,  m_channelConfig, m_audioFormat);  	</span><br><span class="line">			if (chkNewDev())</span><br><span class="line">			&#123;</span><br><span class="line">				m_audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION, m_sampleRateInHz, m_channelConfig, m_audioFormat, m_bufferSizeInBytes);</span><br><span class="line">			&#125;</span><br><span class="line">			else</span><br><span class="line">			&#123;</span><br><span class="line">				m_audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, m_sampleRateInHz, m_channelConfig, m_audioFormat, m_bufferSizeInBytes);</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			int packSize = Math.min(960, m_bufferSizeInBytes*2);</span><br><span class="line">			audioData = new short[packSize];</span><br><span class="line">			return 0;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果系统支持回声消除，则用<strong>MediaRecorder.AudioSource.VOICE_COMMUNICATION</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public int GetSessionId()</span><br><span class="line">		&#123;</span><br><span class="line">			return m_audioRecord.getAudioSessionId();</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>获取mic的sessionid，给回声消除和播放关联用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public boolean initAEC(int audioSession)</span><br><span class="line">	&#123;</span><br><span class="line">		if (m_canceler != null)</span><br><span class="line">		&#123;</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line">		m_canceler = AcousticEchoCanceler.create(audioSession);</span><br><span class="line">		m_canceler.setEnabled(true);</span><br><span class="line">		return m_canceler.getEnabled();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>创建回声消除 并使能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int InitAudioTrack()</span><br><span class="line">&#123;</span><br><span class="line">	int m_sampleRateInHz = 48000;  </span><br><span class="line">	int m_channelConfig  =  AudioFormat.CHANNEL_IN_STEREO;   </span><br><span class="line">	int m_audioFormat    = AudioFormat.ENCODING_PCM_16BIT; </span><br><span class="line">	int m_bufferSizeInBytes = 1024*4;</span><br><span class="line">	</span><br><span class="line">	if (chkNewDev() &amp;&amp; m_recorder != null)</span><br><span class="line">	&#123;</span><br><span class="line">		m_audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, m_sampleRateInHz, m_channelConfig, m_audioFormat, m_bufferSizeInBytes, AudioTrack.MODE_STREAM, m_recorder.GetSessionId());</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		m_audioTrack = new AudioTrack(AudioManager.STREAM_VOICE_CALL, m_sampleRateInHz, m_channelConfig, m_audioFormat, m_bufferSizeInBytes, AudioTrack.MODE_STREAM);</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果系统支持回声处理 则创建关联mic 的sessionid</p>
+<p>ok，走通了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);</span><br><span class="line">AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);</span><br><span class="line">audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);</span><br><span class="line">audioManager.setSpeakerphoneOn(true);</span><br></pre></td></tr></table></figure>
+<p>忘了说，在程序启动的时候需要设置一下 <strong>AudioManager.MODE_IN_COMMUNICATION</strong> 和 外放来验证回声处理效果</p>
+<p>代码在github  <a href="https://github.com/newrtc/AndroidEchoDemo/" target="_blank" rel="noopener">AndroidEchoDemo</a></p>
+<blockquote>
+<p>talk is cheap, show me the code</p>
+</blockquote>
+<blockquote>
+<p>感兴趣或有问题在这里找我</p>
+</blockquote>
+<p><img src="/images/user/Eric.jpg" alt=""></p>
 
       
 
@@ -190,10 +206,367 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/webrtc//" class="article-tag-list-link color2">webrtc</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/26/hello-world/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/07/26/webrtc/2017-10-25-android system echo/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-webrtc/2017-10-19-webrtc openh264-2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/">webrtc 视频编码之 h264 自动调节分辨率</a>
+    </h1>
+  
+
+        
+        <a href="/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/" class="archive-article-date">
+  	<time datetime="2018-07-26T11:25:14.059Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="webrtc-视频编码之-h264-自动调节分辨率"><a href="#webrtc-视频编码之-h264-自动调节分辨率" class="headerlink" title="webrtc 视频编码之 h264 自动调节分辨率"></a>webrtc 视频编码之 h264 自动调节分辨率</h2><p>上次说到 openh264 的编码分辨率是通过 QualityScaler 计算得来的，继续看</p>
+<p><img src="/images/webrtc/webrtc_openh264_1.png" alt=""></p>
+<p>看代码实现</p>
+<p>初始化接口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">void QualityScaler::Init(int low_qp_threshold,</span><br><span class="line">                         int high_qp_threshold,</span><br><span class="line">                         int initial_bitrate_kbps,</span><br><span class="line">                         int width,</span><br><span class="line">                         int height,</span><br><span class="line">                         int fps) &#123;</span><br><span class="line">  ClearSamples();</span><br><span class="line">  low_qp_threshold_ = low_qp_threshold;</span><br><span class="line">  high_qp_threshold_ = high_qp_threshold;</span><br><span class="line">  downscale_shift_ = 0;</span><br><span class="line">  fast_rampup_ = true;</span><br><span class="line"></span><br><span class="line">  const int init_width = width;</span><br><span class="line">  const int init_height = height;</span><br><span class="line">  if (initial_bitrate_kbps &gt; 0) &#123;</span><br><span class="line">    int init_num_pixels = width * height;</span><br><span class="line">    if (initial_bitrate_kbps &lt; kVgaBitrateThresholdKbps)</span><br><span class="line">      init_num_pixels = kVgaNumPixels;</span><br><span class="line">    if (initial_bitrate_kbps &lt; kQvgaBitrateThresholdKbps)</span><br><span class="line">      init_num_pixels = kQvgaNumPixels;</span><br><span class="line">    while (width * height &gt; init_num_pixels) &#123;</span><br><span class="line">      ++downscale_shift_;</span><br><span class="line">      width /= 2;</span><br><span class="line">      height /= 2;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  UpdateTargetResolution(init_width, init_height);</span><br><span class="line">  ReportFramerate(fps);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编码器对不同的编码分辨率预设了码率范围，当码率超出对应的范围时，会去调整分辨率</p>
+<p>对应范围在<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">static const int kVgaBitrateThresholdKbps = 500;</span><br><span class="line">static const int kVgaNumPixels = 700 * 500;  // 640x480</span><br><span class="line">static const int kQvgaBitrateThresholdKbps = 250;</span><br><span class="line">static const int kQvgaNumPixels = 400 * 300;  // 320x240</span><br></pre></td></tr></table></figure></p>
+<p>视频清晰度上报<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">void QualityScaler::ReportQP(int qp) &#123;</span><br><span class="line">  framedrop_percent_.AddSample(0);</span><br><span class="line">  average_qp_.AddSample(qp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>qp 表明了当前帧的清晰度，越大视频越模糊，越小越清晰（0-51），当编码器编完时，会计算当前帧的qp，并上报</p>
+<p>编码器丢帧上报<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void QualityScaler::ReportDroppedFrame() &#123;</span><br><span class="line">  framedrop_percent_.AddSample(100);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当码率太小或者画面剧烈运动时，编码需要的码率增大，但是设置的目标码率太小，导致编码失败，此时上报丢帧</p>
+<p>编码器编码前对原始图像拉伸计算<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">void QualityScaler::OnEncodeFrame(int width, int height) &#123;</span><br><span class="line">  // Should be set through InitEncode -&gt; Should be set by now.</span><br><span class="line">  RTC_DCHECK_GE(low_qp_threshold_, 0);</span><br><span class="line">  if (target_res_.width != width || target_res_.height != height) &#123;</span><br><span class="line">    UpdateTargetResolution(width, height);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Check if we should scale down due to high frame drop.</span><br><span class="line">  const auto drop_rate = framedrop_percent_.GetAverage(num_samples_downscale_);</span><br><span class="line">  if (drop_rate &amp;&amp; *drop_rate &gt;= kFramedropPercentThreshold) &#123;</span><br><span class="line">    ScaleDown();</span><br><span class="line">    return;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Check if we should scale up or down based on QP.</span><br><span class="line">  const auto avg_qp_down = average_qp_.GetAverage(num_samples_downscale_);</span><br><span class="line">  if (avg_qp_down &amp;&amp; *avg_qp_down &gt; high_qp_threshold_) &#123;</span><br><span class="line">    ScaleDown();</span><br><span class="line">    return;</span><br><span class="line">  &#125;</span><br><span class="line">  const auto avg_qp_up = average_qp_.GetAverage(num_samples_upscale_);</span><br><span class="line">  if (avg_qp_up &amp;&amp; *avg_qp_up &lt;= low_qp_threshold_) &#123;</span><br><span class="line">    // QP has been low. We want to try a higher resolution.</span><br><span class="line">    ScaleUp();</span><br><span class="line">    return;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先是按照码率计算的来一下调整<br>再根据丢帧率百分比计算</p>
+<p>yuv 图像拉伸<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rtc::scoped_refptr&lt;VideoFrameBuffer&gt; QualityScaler::GetScaledBuffer(</span><br><span class="line">    const rtc::scoped_refptr&lt;VideoFrameBuffer&gt;&amp; frame)</span><br></pre></td></tr></table></figure></p>
+<p>参数设定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">static const int kMeasureSecondsUpscale = 5; //调整时间间隔 避免频繁调整 导致画面一直变化</span><br><span class="line">static const int kMeasureSecondsDownscale = 5;</span><br><span class="line">static const int kFramedropPercentThreshold = 60; //编码器丢帧率</span><br><span class="line">// Min width/height to downscale to, set to not go below QVGA, but with some</span><br><span class="line">// margin to permit &quot;almost-QVGA&quot; resolutions, such as QCIF.</span><br><span class="line">static const int kMinDownscaleDimension = 140;  //最小分辨率</span><br><span class="line"></span><br><span class="line">static const int kLowH264QpThreshold = 24; //最小qp 小于此值 会提高分辨率</span><br><span class="line">static const int kHighH264QpThreshold = 37; //最大qp 大于此值 会降低分辨率</span><br></pre></td></tr></table></figure>
+<p>ok，我们可以修改这些参数 设置最小的分辨率，调整时间等的</p>
+<p><img src="/images/user/Eric.jpg" alt=""></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/webrtc//" class="article-tag-list-link color2">webrtc</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/07/26/webrtc/2017-10-19-webrtc openh264-2/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-webrtc/2017-10-15-webrtc openh264-1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/webrtc/2017-10-15-webrtc openh264-1/">webrtc 视频编码之 h264 自动调节分辨率</a>
+    </h1>
+  
+
+        
+        <a href="/2018/07/26/webrtc/2017-10-15-webrtc openh264-1/" class="archive-article-date">
+  	<time datetime="2018-07-26T11:25:14.041Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="webrtc-视频编码之-h264-自动调节分辨率"><a href="#webrtc-视频编码之-h264-自动调节分辨率" class="headerlink" title="webrtc 视频编码之 h264 自动调节分辨率"></a>webrtc 视频编码之 h264 自动调节分辨率</h2><p>webrtc 内部支持 vp8，vp9，h264 视频编码，由于业务需要和出于通用性考虑，我选择了 h264 编码，webrtc集成了openh264，ffmpeg用于h264的编解码。当然在移动平台也集成了硬件编解码，但是测试发现在ios上硬件编码还算可以，android上表现不稳定，差异很大，主要问题出在码率控制，视频质量控制上。动态调整码率可是保证视频流畅的重要技术，但android的mediacodec在编码过程中调整码率，会出现花屏，视频质量下降严重，并且编码的延时也比较大。在windows，android，mac上采用软编码，在ios上采用硬编码。</p>
+<p><strong>今天主要看看openh264 是如何动态调整分辨率的</strong></p>
+<h2 id="webrtc-的调整流程"><a href="#webrtc-的调整流程" class="headerlink" title="webrtc 的调整流程"></a>webrtc 的调整流程</h2><p><img src="/images/webrtc/webrtc_openh264.png" alt=""></p>
+<h2 id="openh264-的编码调用位置"><a href="#openh264-的编码调用位置" class="headerlink" title="openh264 的编码调用位置"></a>openh264 的编码调用位置</h2><p>src\webrtc\modules\video_coding\codecs\h264\h264_encoder_impl.cc</p>
+<p><strong>首先看看几个重要接口、参数</strong></p>
+<h2 id="码率调整接口"><a href="#码率调整接口" class="headerlink" title="码率调整接口"></a>码率调整接口</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">int32_t H264EncoderImpl::SetRates(uint32_t bitrate, uint32_t framerate) &#123;</span><br><span class="line">  if (bitrate &lt;= 0 || framerate &lt;= 0) &#123;</span><br><span class="line">    return WEBRTC_VIDEO_CODEC_ERR_PARAMETER;</span><br><span class="line">  &#125;</span><br><span class="line">  codec_settings_.targetBitrate = bitrate;</span><br><span class="line">  codec_settings_.maxFramerate = framerate;</span><br><span class="line">  quality_scaler_.ReportFramerate(framerate);</span><br><span class="line"></span><br><span class="line">  SBitrateInfo target_bitrate;</span><br><span class="line">  memset(&amp;target_bitrate, 0, sizeof(SBitrateInfo));</span><br><span class="line">  target_bitrate.iLayer = SPATIAL_LAYER_ALL,</span><br><span class="line">  target_bitrate.iBitrate = codec_settings_.targetBitrate * 1000;</span><br><span class="line">  openh264_encoder_-&gt;SetOption(ENCODER_OPTION_BITRATE,</span><br><span class="line">                               &amp;target_bitrate);</span><br><span class="line">  float max_framerate = static_cast&lt;float&gt;(codec_settings_.maxFramerate);</span><br><span class="line">  openh264_encoder_-&gt;SetOption(ENCODER_OPTION_FRAME_RATE,</span><br><span class="line">                               &amp;max_framerate);</span><br><span class="line">  return WEBRTC_VIDEO_CODEC_OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数继承自 H264Encoder， 码率调整后调用此接口通知编码器去调整 输出码率。<strong>openh264_encoder_-&gt;SetOption</strong>调用</p>
+<h2 id="openh264-的几个重要参数"><a href="#openh264-的几个重要参数" class="headerlink" title="openh264 的几个重要参数"></a>openh264 的几个重要参数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">SEncParamExt H264EncoderImpl::CreateEncoderParams() const &#123;</span><br><span class="line">  ...</span><br><span class="line">  //宽</span><br><span class="line">  encoder_params.iPicWidth = codec_settings_.width;</span><br><span class="line">  //高</span><br><span class="line">  encoder_params.iPicHeight = codec_settings_.height;</span><br><span class="line">  // |encoder_params| uses bit/s, |codec_settings_| uses kbit/s.</span><br><span class="line">  //目标码率</span><br><span class="line">  encoder_params.iTargetBitrate = codec_settings_.targetBitrate * 1000;</span><br><span class="line">  //最大码率</span><br><span class="line">  encoder_params.iMaxBitrate = codec_settings_.maxBitrate * 1000;</span><br><span class="line">  // Rate Control mode</span><br><span class="line">  encoder_params.iRCMode = RC_BITRATE_MODE;</span><br><span class="line">  //最大帧率</span><br><span class="line">  encoder_params.fMaxFrameRate =</span><br><span class="line">      static_cast&lt;float&gt;(codec_settings_.maxFramerate);</span><br><span class="line"></span><br><span class="line">  // The following parameters are extension parameters (they&apos;re in SEncParamExt,</span><br><span class="line">  // not in SEncParamBase).</span><br><span class="line">  //当码率不足时，丢弃当前帧</span><br><span class="line">  encoder_params.bEnableFrameSkip =</span><br><span class="line">      codec_settings_.codecSpecific.H264.frameDroppingOn;</span><br><span class="line">  // |uiIntraPeriod|    - multiple of GOP size</span><br><span class="line">  // |keyFrameInterval| - number of frames</span><br><span class="line">  //关键帧间隔</span><br><span class="line">  encoder_params.uiIntraPeriod =</span><br><span class="line">      codec_settings_.codecSpecific.H264.keyFrameInterval;</span><br><span class="line"> ...</span><br><span class="line">  return encoder_params;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重点参数是 <strong>bEnableFrameSkip</strong>， 当画面剧烈运动时，编码需要的带宽也会增大，但是最大码率限制了输出带宽，当增大qp仍无法控制码率在最大码率范围内时，编码器无法正常编码，此时允许丢弃掉编码帧，稍后会说丢帧会引起调整分辨率。</p>
+<p><strong>有了码率调整和编码器参数调整，这两者时怎么关联起来的呢？</strong></p>
+<p>通过 <strong>QualityScaler quality_scaler_;</strong></p>
+<p>看看调用</p>
+<h3 id="在初始化里调用了init-设置了码率，宽，高，帧率"><a href="#在初始化里调用了init-设置了码率，宽，高，帧率" class="headerlink" title="在初始化里调用了init 设置了码率，宽，高，帧率"></a>在初始化里调用了init 设置了码率，宽，高，帧率</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">quality_scaler_.Init(codec_settings_.codecType, codec_settings_.startBitrate,</span><br><span class="line">                     codec_settings_.width, codec_settings_.height,</span><br><span class="line">                     codec_settings_.maxFramerate);</span><br></pre></td></tr></table></figure>
+<h3 id="在SetRates-里上报目标帧率"><a href="#在SetRates-里上报目标帧率" class="headerlink" title="在SetRates 里上报目标帧率"></a>在SetRates 里上报目标帧率</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">quality_scaler_.ReportFramerate(framerate);</span><br></pre></td></tr></table></figure>
+<h3 id="编码完成后会上报qp，或者丢弃后上报droped"><a href="#编码完成后会上报qp，或者丢弃后上报droped" class="headerlink" title="编码完成后会上报qp，或者丢弃后上报droped"></a>编码完成后会上报qp，或者丢弃后上报droped</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">if (encoded_image_._length &gt; 0) &#123;</span><br><span class="line">   // Deliver encoded image.</span><br><span class="line">   CodecSpecificInfo codec_specific;</span><br><span class="line">   codec_specific.codecType = kVideoCodecH264;</span><br><span class="line">   encoded_image_callback_-&gt;Encoded(encoded_image_, &amp;codec_specific,</span><br><span class="line">                                    &amp;frag_header);</span><br><span class="line"></span><br><span class="line">   // Parse and report QP.</span><br><span class="line">   h264_bitstream_parser_.ParseBitstream(encoded_image_._buffer,</span><br><span class="line">                                         encoded_image_._length);</span><br><span class="line">   int qp = -1;</span><br><span class="line">   if (h264_bitstream_parser_.GetLastSliceQp(&amp;qp))</span><br><span class="line">     quality_scaler_.ReportQP(qp);</span><br><span class="line"> &#125; else &#123;</span><br><span class="line">   quality_scaler_.ReportDroppedFrame();</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="在编码的时候获取调整后的分辨率"><a href="#在编码的时候获取调整后的分辨率" class="headerlink" title="在编码的时候获取调整后的分辨率"></a>在编码的时候获取调整后的分辨率</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">quality_scaler_.OnEncodeFrame(input_frame.width(), input_frame.height());</span><br><span class="line">rtc::scoped_refptr&lt;const VideoFrameBuffer&gt; frame_buffer =</span><br><span class="line">    quality_scaler_.GetScaledBuffer(input_frame.video_frame_buffer());</span><br><span class="line">if (frame_buffer-&gt;width() != codec_settings_.width ||</span><br><span class="line">    frame_buffer-&gt;height() != codec_settings_.height) &#123;</span><br><span class="line">  LOG(LS_INFO) &lt;&lt; &quot;Encoder reinitialized from &quot; &lt;&lt; codec_settings_.width</span><br><span class="line">               &lt;&lt; &quot;x&quot; &lt;&lt; codec_settings_.height &lt;&lt; &quot; to &quot;</span><br><span class="line">               &lt;&lt; frame_buffer-&gt;width() &lt;&lt; &quot;x&quot; &lt;&lt; frame_buffer-&gt;height();</span><br><span class="line">  codec_settings_.width = frame_buffer-&gt;width();</span><br><span class="line">  codec_settings_.height = frame_buffer-&gt;height();</span><br><span class="line">  SEncParamExt encoder_params = CreateEncoderParams();</span><br><span class="line">  openh264_encoder_-&gt;SetOption(ENCODER_OPTION_SVC_ENCODE_PARAM_EXT,</span><br><span class="line">                               &amp;encoder_params);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>quality_scaler_.OnEncodeFrame 上报当前采集帧的大小<br>quality_scaler_.GetScaledBuffer 根据前面上报的qp droped等计算出当前应该使用的分辨率，并做了缩放处理，返回的frame是经过缩放后的帧。<br>if 判断分辨率做出了调整，就出重新 CreateEncoderParams()，重置编码器参数，完成调整分辨率</p>
+<h3 id="openh264-有个好处就是支持编码过程中调整分辨率"><a href="#openh264-有个好处就是支持编码过程中调整分辨率" class="headerlink" title="openh264 有个好处就是支持编码过程中调整分辨率"></a>openh264 有个好处就是支持编码过程中调整分辨率</h3><p>后面会继续分析 quality_scaler_ 是如何调整分辨率的</p>
+<p><img src="/images/user/Eric.jpg" alt=""></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/webrtc//" class="article-tag-list-link color2">webrtc</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/07/26/webrtc/2017-10-15-webrtc openh264-1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-system/2017-10-24-linux coredump" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/system/2017-10-24-linux coredump/">linux coredump 设置</a>
+    </h1>
+  
+
+        
+        <a href="/2018/07/26/system/2017-10-24-linux coredump/" class="archive-article-date">
+  	<time datetime="2018-07-26T11:25:14.030Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>查看 coredump 设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ulimit -c</span><br></pre></td></tr></table></figure></p>
+<p>设置coredump 文件大小限制 1024k<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ulimit -c 1024</span><br></pre></td></tr></table></figure></p>
+<p>设置无限制大小<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ulimit -c unlimited</span><br></pre></td></tr></table></figure></p>
+<p>或者一次性设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;ulimit -c unlimited&quot; &gt;&gt; /etc/profile</span><br></pre></td></tr></table></figure></p>
+<p>退出linux 重新登录</p>
+<p>执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ulimit -c</span><br></pre></td></tr></table></figure></p>
+<p>查看设置是否生效</p>
+<p>unlimited 说明已经生效</p>
+<p><img src="/images/user/Eric.jpg" alt=""></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/system//" class="article-tag-list-link color2">system</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/07/26/system/2017-10-24-linux coredump/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-system/2017-10-12-linux timer tsc" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/system/2017-10-12-linux timer tsc/">linux 时钟源 tsc</a>
+    </h1>
+  
+
+        
+        <a href="/2018/07/26/system/2017-10-12-linux timer tsc/" class="archive-article-date">
+  	<time datetime="2018-07-26T11:25:14.012Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在做音视频实时处理时，需要频繁的获取时钟 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">clock_gettime</span><br><span class="line">```  </span><br><span class="line">如果采用的时钟源不合适，会导致cpu飙升</span><br><span class="line"></span><br><span class="line">## 查看系统支持的时钟源</span><br></pre></td></tr></table></figure>
+<p>cat /sys/devices/system/clocksource/clocksource0/available_clocksource<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">阿里云支持 **kvm-clock tsc acpi_pm** 三种</span><br><span class="line">这三种的却别需要自己去查了</span><br><span class="line"></span><br><span class="line">## 查看当前系统的时钟源</span><br></pre></td></tr></table></figure></p>
+<p>cat /sys/devices/system/clocksource/clocksource0/current_clocksource<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">阿里云默认的是 **kvm-clock** 性能极差</span><br><span class="line"></span><br><span class="line">## 更换系统的时钟源</span><br></pre></td></tr></table></figure></p>
+<p>echo ‘tsc’ &gt;  /sys/devices/system/clocksource/clocksource0/current_clocksource<br><code>`</code></p>
+<p><strong>参考</strong></p>
+<p><a href="http://www.mamicode.com/info-detail-1289153.html" target="_blank" rel="noopener">kvm虚拟化环境中的时区设置</a></p>
+<p><a href="http://support.huawei.com/huaweiconnect/enterprise/thread-204169.html" target="_blank" rel="noopener">由kvm-clock时钟源导致的SUSE 11 SP1虚拟机卡死的问题</a></p>
+<p><img src="/images/user/Eric.jpg" alt=""></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/system//" class="article-tag-list-link color2">system</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/07/26/system/2017-10-12-linux timer tsc/">展开全文 >></a>
         </p>
       
 
