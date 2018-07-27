@@ -88,8 +88,8 @@
 <meta property="og:description" content="webrtc 视频编码">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.newrtc.com/images/webrtc/webrtc_openh264.png">
-<meta property="og:image" content="http://www.newrtc.com/images/user/Eric.jpg">
-<meta property="og:updated_time" content="2017-10-16T03:35:32.693Z">
+<meta property="og:image" content="http://www.newrtc.com/images//face.png">
+<meta property="og:updated_time" content="2018-07-27T03:56:58.845Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="webrtc 视频编码之 h264 自动调节分辨率">
 <meta name="twitter:description" content="webrtc 视频编码">
@@ -347,7 +347,7 @@
 <h3 id="在编码的时候获取调整后的分辨率"><a href="#在编码的时候获取调整后的分辨率" class="headerlink" title="在编码的时候获取调整后的分辨率"></a>在编码的时候获取调整后的分辨率</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">quality_scaler_.OnEncodeFrame(input_frame.width(), input_frame.height());</span><br><span class="line">rtc::scoped_refptr&lt;const VideoFrameBuffer&gt; frame_buffer =</span><br><span class="line">    quality_scaler_.GetScaledBuffer(input_frame.video_frame_buffer());</span><br><span class="line">if (frame_buffer-&gt;width() != codec_settings_.width ||</span><br><span class="line">    frame_buffer-&gt;height() != codec_settings_.height) &#123;</span><br><span class="line">  LOG(LS_INFO) &lt;&lt; &quot;Encoder reinitialized from &quot; &lt;&lt; codec_settings_.width</span><br><span class="line">               &lt;&lt; &quot;x&quot; &lt;&lt; codec_settings_.height &lt;&lt; &quot; to &quot;</span><br><span class="line">               &lt;&lt; frame_buffer-&gt;width() &lt;&lt; &quot;x&quot; &lt;&lt; frame_buffer-&gt;height();</span><br><span class="line">  codec_settings_.width = frame_buffer-&gt;width();</span><br><span class="line">  codec_settings_.height = frame_buffer-&gt;height();</span><br><span class="line">  SEncParamExt encoder_params = CreateEncoderParams();</span><br><span class="line">  openh264_encoder_-&gt;SetOption(ENCODER_OPTION_SVC_ENCODE_PARAM_EXT,</span><br><span class="line">                               &amp;encoder_params);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>quality_scaler_.OnEncodeFrame 上报当前采集帧的大小<br>quality_scaler_.GetScaledBuffer 根据前面上报的qp droped等计算出当前应该使用的分辨率，并做了缩放处理，返回的frame是经过缩放后的帧。<br>if 判断分辨率做出了调整，就出重新 CreateEncoderParams()，重置编码器参数，完成调整分辨率</p>
 <h3 id="openh264-有个好处就是支持编码过程中调整分辨率"><a href="#openh264-有个好处就是支持编码过程中调整分辨率" class="headerlink" title="openh264 有个好处就是支持编码过程中调整分辨率"></a>openh264 有个好处就是支持编码过程中调整分辨率</h3><p>后面会继续分析 quality_scaler_ 是如何调整分辨率的</p>
-<p><img src="/images/user/Eric.jpg" alt=""></p>
+<p><img src="/images//face.png" alt=""></p>
 
       
     </div>

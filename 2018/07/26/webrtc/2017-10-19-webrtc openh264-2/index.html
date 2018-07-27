@@ -88,8 +88,8 @@
 <meta property="og:description" content="webrtc 视频编码">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://www.newrtc.com/images/webrtc/webrtc_openh264_1.png">
-<meta property="og:image" content="http://www.newrtc.com/images/user/Eric.jpg">
-<meta property="og:updated_time" content="2017-10-19T07:08:21.460Z">
+<meta property="og:image" content="http://www.newrtc.com/images/face.png">
+<meta property="og:updated_time" content="2018-07-27T03:56:21.213Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="webrtc 视频编码之 h264 自动调节分辨率">
 <meta name="twitter:description" content="webrtc 视频编码">
@@ -345,7 +345,7 @@
 <p>参数设定</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">static const int kMeasureSecondsUpscale = 5; //调整时间间隔 避免频繁调整 导致画面一直变化</span><br><span class="line">static const int kMeasureSecondsDownscale = 5;</span><br><span class="line">static const int kFramedropPercentThreshold = 60; //编码器丢帧率</span><br><span class="line">// Min width/height to downscale to, set to not go below QVGA, but with some</span><br><span class="line">// margin to permit &quot;almost-QVGA&quot; resolutions, such as QCIF.</span><br><span class="line">static const int kMinDownscaleDimension = 140;  //最小分辨率</span><br><span class="line"></span><br><span class="line">static const int kLowH264QpThreshold = 24; //最小qp 小于此值 会提高分辨率</span><br><span class="line">static const int kHighH264QpThreshold = 37; //最大qp 大于此值 会降低分辨率</span><br></pre></td></tr></table></figure>
 <p>ok，我们可以修改这些参数 设置最小的分辨率，调整时间等的</p>
-<p><img src="/images/user/Eric.jpg" alt=""></p>
+<p><img src="/images/face.png" alt=""></p>
 
       
     </div>
